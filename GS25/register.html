@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tham gia Hội viên GS25 - Lifestyle Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="auth-body">
+    <div
+      id="toast-container"
+      class="fixed top-5 right-5 z-[100] space-y-3 pointer-events-none"
+    ></div>
+
+    <div class="login-container animate-fade">
+      <div class="hidden lg:flex w-1/2 p-10">
+        <div
+          class="w-full h-full bg-[#011627] rounded-[50px] flex flex-col items-center justify-center overflow-hidden relative shadow-2xl"
+        >
+          <div
+            class="absolute inset-0 bg-gradient-to-tr from-[#007CBA]/20 to-transparent"
+          ></div>
+          <div
+            class="absolute text-[80px] font-black italic text-white/5 select-none uppercase leading-none top-10"
+          >
+            JOIN US
+          </div>
+
+          <img
+            src="https://cdni.iconscout.com/illustration/premium/thumb/registration-form-4481081-3723265.png"
+            class="w-3/4 object-contain relative z-10 floating drop-shadow-[0_0_30px_rgba(165,243,252,0.4)]"
+          />
+
+          <div class="mt-6 text-center relative z-10 px-10">
+            <h3
+              class="text-white text-xl font-black italic uppercase tracking-tighter"
+            >
+              Đặc quyền hội viên
+            </h3>
+            <p class="text-[9px] text-white/50 uppercase tracking-[0.2em] mt-2">
+              Tích điểm - Nhận quà - Ưu đãi độc quyền
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="w-full lg:w-1/2 p-12 md:p-16 flex flex-col justify-center text-white"
+      >
+        <div class="mb-10">
+          <div
+            class="bg-white text-[#007CBA] font-black text-2xl inline-block px-4 py-1 rounded-xl italic mb-4 shadow-lg"
+          >
+            GS25
+          </div>
+          <h2 class="text-3xl font-extrabold italic uppercase tracking-tighter">
+            Đăng ký thành viên
+          </h2>
+          <p
+            class="text-[10px] text-[#A5F3FC] font-black uppercase mt-2 italic tracking-widest"
+          >
+            Tặng ngay 100 PTS khi kích hoạt tài khoản
+          </p>
+        </div>
+
+        <form onsubmit="handleRegister(event)" class="space-y-6">
+          <div class="relative">
+            <label class="text-[9px] font-black uppercase opacity-60 ml-1"
+              >Họ và Tên</label
+            >
+            <input
+              type="text"
+              id="reg-name"
+              required
+              class="glass-input-line"
+              placeholder="Nguyễn Văn A"
+            />
+            <i
+              class="fa-solid fa-user absolute right-2 bottom-3 text-[10px] opacity-40"
+            ></i>
+          </div>
+
+          <div class="relative">
+            <label class="text-[9px] font-black uppercase opacity-60 ml-1"
+              >Số điện thoại</label
+            >
+            <input
+              type="text"
+              id="reg-phone"
+              required
+              class="glass-input-line"
+              placeholder="09xxxxxxxx"
+            />
+            <i
+              class="fa-solid fa-phone absolute right-2 bottom-3 text-[10px] opacity-40"
+            ></i>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="relative">
+              <label class="text-[9px] font-black uppercase opacity-60 ml-1"
+                >Mật khẩu</label
+              >
+              <input
+                type="password"
+                id="reg-pass"
+                required
+                class="glass-input-line"
+                placeholder="••••••••"
+              />
+            </div>
+            <div class="relative">
+              <label class="text-[9px] font-black uppercase opacity-60 ml-1"
+                >Xác nhận</label
+              >
+              <input
+                type="password"
+                id="reg-confirm"
+                required
+                class="glass-input-line"
+                placeholder="••••••••"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 py-2">
+            <input
+              type="checkbox"
+              required
+              class="w-3 h-3 accent-[#A5F3FC] cursor-pointer"
+            />
+            <label
+              class="text-[9px] font-bold text-white/60 uppercase tracking-tighter"
+              >Tôi đồng ý với điều khoản GS25 Vietnam</label
+            >
+          </div>
+
+          <button type="submit" class="w-full btn-pill-gs25 mt-4 italic">
+            Tạo tài khoản ngay
+          </button>
+        </form>
+
+        <p
+          class="mt-8 text-center text-[10px] font-bold text-white/40 uppercase tracking-widest"
+        >
+          Đã có tài khoản?
+          <a
+            href="login.html"
+            class="text-white border-b border-white ml-2 pb-0.5"
+            >Đăng nhập</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Hàm hiển thị thông báo Toast
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";
+        const icon = type === "success" ? "fa-circle-check" : "fa-circle-xmark";
+
+        toast.className = `toast-item ${bgColor} text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 font-bold text-[11px] uppercase italic pointer-events-auto`;
+        toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> <span>${message}</span>`;
+
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "scale(0.9)";
+          toast.style.transition = "0.5s";
+          setTimeout(() => toast.remove(), 500);
+        }, 3000);
+      }
+
+      function handleRegister(e) {
+        e.preventDefault();
+
+        // Thêm .trim() để xóa khoảng trắng thừa ở 2 đầu
+        const name = document.getElementById("reg-name").value.trim();
+        const phone = document.getElementById("reg-phone").value.trim();
+        const pass = document.getElementById("reg-pass").value.trim();
+        const confirm = document.getElementById("reg-confirm").value.trim();
+
+        if (pass !== confirm) {
+          showToast("Mật khẩu xác nhận không khớp!", "error");
+          return;
+        }
+
+        let users = JSON.parse(localStorage.getItem("gs25_users")) || [];
+
+        if (users.find((u) => u.phone === phone)) {
+          showToast("Số điện thoại này đã được đăng ký!", "error");
+          return;
+        }
+
+        const newUser = {
+          id: Date.now(),
+          name: name,
+          phone: phone, // Lưu SĐT đã trim
+          password: pass, // Lưu mật khẩu đã trim
+          role: "user",
+          points: 100,
+          history: [],
+        };
+
+        users.push(newUser);
+        localStorage.setItem("gs25_users", JSON.stringify(users));
+
+        showToast("Đăng ký thành công! Đang chuyển hướng...", "success");
+        setTimeout(() => (window.location.href = "login.html"), 1500);
+      }
+    </script>
+  </body>
+</html>

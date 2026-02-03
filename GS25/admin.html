@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GS25 Admin - Ultimate Manager</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        /* --- THEME: LIGHT & HIGH CONTRAST --- */
+        :root {
+            --gs-primary: #007CBA;       
+            --gs-secondary: #00D2FF;     
+            --bg-body: #f0f9ff;          
+            --bg-card: #ffffff;          
+            --border-color: #cbd5e1;     
+            --text-main: #111827;        /* Đen đậm (Gray 900) */
+            --text-muted: #475569;       /* Xám đậm (Gray 600) */
+        }
+
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gs-primary); }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            z-index: 50;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.05);
+        }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 20px; margin: 4px 12px;
+            border-radius: 12px;
+            color: var(--text-muted); font-weight: 700; font-size: 13px;
+            transition: all 0.2s; cursor: pointer;
+        }
+        .sidebar-item:hover { background: #f0f9ff; color: var(--gs-primary); }
+        .sidebar-active {
+            background: #e0f2fe !important; 
+            color: var(--gs-primary) !important;
+            border-left: 4px solid var(--gs-primary);
+        }
+
+        /* HEADER */
+        header { 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 40;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: 0.3s;
+        }
+        .card:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px -3px rgba(0, 124, 186, 0.15);
+            border-color: var(--gs-primary);
+        }
+
+        /* BUTTONS */
+        .btn { padding: 8px 16px; border-radius: 10px; font-weight: 800; font-size: 11px; text-transform: uppercase; transition: 0.2s; border: none; cursor: pointer; }
+        .btn-primary { background: linear-gradient(135deg, #007CBA, #0099ff); color: white; box-shadow: 0 4px 10px rgba(0, 124, 186, 0.2); }
+        .btn-primary:hover { box-shadow: 0 6px 15px rgba(0, 124, 186, 0.3); transform: translateY(-1px); }
+        
+        .btn-ghost { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+        .btn-ghost:hover { background: #e2e8f0; color: #0f172a; }
+
+        .btn-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: 0.2s; }
+        .btn-action { padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 800; }
+        
+        .btn-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; } .btn-success:hover { background: #bbf7d0; }
+        .btn-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; } .btn-danger:hover { background: #fecaca; }
+        .btn-warning { background: #fef3c7; color: #854d0e; border: 1px solid #fde68a; } .btn-warning:hover { background: #fde68a; }
+
+        /* TABLE - Chữ đậm hơn */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { background: #f8fafc; color: #475569; font-size: 11px; padding: 16px; text-align: left; text-transform: uppercase; border-bottom: 2px solid var(--border-color); font-weight: 800; }
+        td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #1e293b; vertical-align: middle; }
+        tr:hover td { background: #f8fafc; }
+
+        /* BADGES */
+        .badge { padding: 4px 10px; border-radius: 99px; font-size: 10px; font-weight: 800; text-transform: uppercase; display: inline-block; }
+        .badge-pending { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+        .badge-shipping { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .badge-success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-cancel { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        /* INPUTS */
+        .input-field {
+            width: 100%; padding: 12px 16px; border-radius: 12px; 
+            border: 2px solid #cbd5e1;
+            outline: none; font-size: 13px; font-weight: 600; transition: 0.2s; 
+            background: #ffffff; color: #0f172a;
+        }
+        .input-field:focus { border-color: var(--gs-primary); box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1); background: #f8fafc; }
+        select.input-field option { background-color: white; color: #0f172a; }
+
+        /* ANIMATION */
+        .animate-fade { animation: fadeInUp 0.4s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Modal Box */
+        .modal-box { background: #ffffff; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; }
+    </style>
+</head>
+
+<body>
+    <div id="toast-container" class="fixed top-5 right-5 z-[100] space-y-3 pointer-events-none"></div>
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <aside class="w-72 sidebar flex flex-col fixed lg:static h-full transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50" id="sidebar">
+            <div class="p-8 text-center border-b border-gray-200">
+                <div class="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#007CBA] to-[#0099ff] text-white rounded-2xl mb-4 shadow-lg shadow-blue-200">
+                    <span class="text-2xl font-black italic">GS</span>
+                </div>
+                <h2 class="text-slate-900 font-black text-sm uppercase tracking-[0.2em]">Administrator</h2>
+                <p class="text-[10px] text-slate-500 mt-1 font-bold">Hệ thống quản lý</p>
+            </div>
+
+            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto no-scrollbar">
+                <div onclick="window.location.href='index.html'" class="sidebar-item group hover:bg-slate-50">
+                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-gs-primary group-hover:border-gs-primary transition"><i class="fa-solid fa-store"></i></div> 
+                    <span class="text-slate-700 group-hover:text-gs-primary font-bold">Xem Shop</span>
+                </div>
+                <div class="border-t border-gray-200 my-4"></div>
+                
+                <div onclick="showTab('dashboard')" class="sidebar-item sidebar-active group" id="nav-dashboard">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-gs-primary flex items-center justify-center group-hover:bg-gs-primary group-hover:text-white transition"><i class="fa-solid fa-chart-pie"></i></div>
+                    <span>Tổng quan</span>
+                </div>
+                <div onclick="showTab('inventory')" class="sidebar-item group" id="nav-inventory">
+                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-gs-primary group-hover:border-gs-primary transition"><i class="fa-solid fa-box-open"></i></div>
+                    <span>Kho hàng</span>
+                </div>
+                <div onclick="showTab('orders')" class="sidebar-item group" id="nav-orders">
+                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-gs-primary group-hover:border-gs-primary transition"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <span>Đơn hàng</span>
+                </div>
+                <div onclick="showTab('shipping')" class="sidebar-item group" id="nav-shipping">
+                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-gs-primary group-hover:border-gs-primary transition"><i class="fa-solid fa-truck-fast"></i></div>
+                    <span>Vận chuyển</span>
+                </div>
+                <div onclick="showTab('recruitment')" class="sidebar-item group" id="nav-recruitment">
+                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-gs-primary group-hover:border-gs-primary transition"><i class="fa-solid fa-users-viewfinder"></i></div>
+                    <span>Tuyển dụng</span>
+                </div>
+                <div onclick="showTab('members')" class="sidebar-item group" id="nav-members">
+                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-gs-primary group-hover:border-gs-primary transition"><i class="fa-solid fa-users"></i></div>
+                    <span>Khách hàng</span>
+                </div>
+                
+                <div class="pt-6 mt-6 border-t border-gray-200">
+                    <div onclick="exportOrdersCSV()" class="sidebar-item text-emerald-700 hover:bg-emerald-50 group">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-solid fa-file-csv"></i></div>
+                        <span>Xuất báo cáo</span>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-6 border-t border-gray-200">
+                <button onclick="logout()" class="w-full py-4 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-xl font-bold text-[11px] uppercase transition flex items-center justify-center gap-2 group">
+                    <i class="fa-solid fa-power-off group-hover:scale-110 transition"></i> Đăng xuất
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col overflow-hidden relative">
+            <header class="h-20 flex items-center justify-between px-8 shadow-sm z-40 bg-white/80 backdrop-blur-md border-b border-gray-200">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-slate-500"><i class="fa-solid fa-bars text-xl"></i></button>
+                    <div>
+                        <h2 class="font-black text-2xl text-slate-800 uppercase tracking-tight leading-none" id="tab-title">DASHBOARD</h2>
+                        <p class="text-[10px] font-bold text-gs-primary uppercase tracking-[0.2em] mt-1">Management System</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden md:block">
+                        <p class="text-xs font-bold text-slate-800">Admin</p>
+                        <p class="text-[10px] text-green-600 flex items-center justify-end gap-1"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Online</p>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Admin+GS25&background=007CBA&color=fff" class="w-11 h-11 rounded-full border-2 border-white shadow-md">
+                </div>
+            </header>
+
+            <div id="tab-content" class="flex-1 overflow-y-auto p-6 lg:p-10 no-scrollbar"></div>
+        </main>
+    </div>
+
+    <div id="product-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+        <div class="modal-box w-full max-w-md rounded-2xl shadow-2xl animate-fade overflow-hidden">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-slate-800 uppercase tracking-wider">Thông tin sản phẩm</h3>
+                <button onclick="closeProductModal()"><i class="fa-solid fa-xmark text-slate-400 hover:text-red-500 text-xl"></i></button>
+            </div>
+            <form onsubmit="handleProductSubmit(event)" class="p-8 space-y-5">
+                <input type="hidden" id="prod-id" />
+                <div>
+                    <label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Tên món hàng</label>
+                    <input type="text" id="prod-name" required class="input-field" placeholder="Nhập tên...">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Hình ảnh (URL)</label>
+                    <input type="text" id="prod-img" class="input-field" placeholder="https://...">
+                </div>
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Giá bán</label>
+                        <input type="number" id="prod-price" required class="input-field">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Tồn kho</label>
+                        <input type="number" id="prod-stock" required class="input-field">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Danh mục</label>
+                    <select id="prod-cat" class="input-field cursor-pointer">
+                        <option value="food">🍱 Fresh Food</option>
+                        <option value="drink">🥤 Đồ uống</option>
+                        <option value="snack">🍿 Bánh kẹo</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeProductModal()" class="flex-1 btn btn-ghost">Hủy</button>
+                    <button type="submit" class="flex-1 btn btn-primary">Lưu lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="add-job-modal" class="fixed inset-0 z-[150] hidden flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+        <div class="modal-box w-full max-w-md rounded-2xl shadow-2xl animate-fade overflow-hidden">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-slate-800 uppercase tracking-wider">Đăng tuyển dụng</h3>
+                <button onclick="closeJobModal()"><i class="fa-solid fa-xmark text-slate-400 hover:text-red-500 text-xl"></i></button>
+            </div>
+            <form onsubmit="handleJobSubmit(event)" class="p-8 space-y-5">
+                <div>
+                    <label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Vị trí</label>
+                    <select id="job-title-input" class="input-field cursor-pointer">
+                        <option value="Nhân viên bán hàng (Part-time)">Nhân viên bán hàng (Part-time)</option>
+                        <option value="Nhân viên bán hàng (Full-time)">Nhân viên bán hàng (Full-time)</option>
+                        <option value="Cửa hàng trưởng">Cửa hàng trưởng</option>
+                        <option value="Nhân viên kho">Nhân viên kho</option>
+                    </select>
+                </div>
+                <div><label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Chi nhánh</label><input type="text" id="job-branch-input" required class="input-field" placeholder="VD: GS25 Quận 1"></div>
+                <div class="grid grid-cols-2 gap-5">
+                    <div><label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Mức lương</label><input type="text" id="job-salary-input" required class="input-field" placeholder="25k/h"></div>
+                    <div>
+                        <label class="text-[11px] font-bold uppercase text-slate-500 mb-2 block">Loại hình</label>
+                        <select id="job-type-input" class="input-field">
+                            <option value="Part-time">Part-time</option>
+                            <option value="Full-time">Full-time</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeJobModal()" class="flex-1 btn btn-ghost">Hủy</button>
+                    <button type="submit" class="flex-1 btn btn-primary">Đăng tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="bill-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-[380px] rounded-2xl shadow-2xl animate-fade p-8 text-slate-800 border border-gray-200">
+            <div id="bill-content"></div>
+            <button onclick="closeBillModal()" class="w-full mt-6 btn btn-ghost">Đóng hóa đơn</button>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

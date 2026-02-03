@@ -1,0 +1,122 @@
+:root {
+  --gs-blue: #007cba;
+  --gs-blue-dark: #004e75;
+  --gs-cyan: #a5f3fc;
+  --gs-navy: #011627;
+  --gs-glass: rgba(255, 255, 255, 0.1);
+}
+
+/* 1. ĐỒNG BỘ NỀN (Dùng Mesh Gradient cho toàn site hoặc class .auth-body) */
+body, .auth-body {
+  min-height: 100vh;
+  background: radial-gradient(at 0% 0%, var(--gs-blue) 0, transparent 50%),
+    radial-gradient(at 100% 0%, var(--gs-cyan) 0, transparent 50%),
+    radial-gradient(at 50% 100%, var(--gs-blue-dark) 0, transparent 100%);
+  background-color: #003a58;
+  margin: 0;
+  color: white;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* 2. CONTAINER KÍNH MỜ (Dùng cho cả Login & Modals) */
+.login-container, .glass-modal-content {
+  background: var(--gs-glass);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 40px; /* Bo góc mềm mại hơn */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
+}
+
+/* 3. ĐỒNG BỘ INPUT (Dạng gạch chân cực sang) */
+.glass-input-line, 
+#profile-modal input, 
+#checkout-modal input,
+#password-modal input {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid rgba(165, 243, 252, 0.4) !important;
+  padding: 12px 0;
+  color: white !important;
+  width: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.glass-input-line:focus, 
+input:focus {
+  border-bottom-color: var(--gs-cyan) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -4px rgba(165, 243, 252, 0.3);
+}
+
+/* 4. ĐỒNG BỘ NÚT BẤM GS25 PILL */
+.btn-pill-gs25 {
+  background: linear-gradient(to right, var(--gs-blue), #00a4e4);
+  color: white;
+  padding: 16px;
+  border-radius: 50px;
+  font-weight: 900;
+  text-transform: uppercase;
+  transition: 0.3s;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.btn-pill-gs25:hover {
+  transform: scale(1.02) translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 15px 30px rgba(0, 124, 186, 0.4);
+}
+
+/* 5. FIX DROP DOWN MENU (DÀNH CHO CLICK/HOVER) */
+#user-dropdown-menu {
+    background: rgba(1, 22, 39, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+}
+
+/* 6. HIỆU ỨNG BOUNCY CHO TOAST */
+.toast-item {
+  animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+/* Ép màu nền tối và chữ sáng cho tất cả các vùng bị trắng xóa */
+#checkout-modal .bg-white, 
+#history-modal .bg-white,
+#invoice-modal .bg-white {
+    background: rgba(15, 23, 42, 0.95) !important; /* Navy cực đậm */
+    color: white !important;
+    backdrop-filter: blur(20px);
+}
+
+/* Sửa màu các vùng phụ (billing area) */
+.bg-blue-50, .bg-slate-50 {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+}
+
+/* Sửa màu chữ đen thành trắng */
+.text-slate-800, .text-slate-600, .text-slate-900 {
+    color: #f8fafc !important;
+}
+
+/* Làm cho các đường kẻ dashed trong hóa đơn dễ nhìn hơn */
+.border-slate-100, .border-slate-200, .border-dashed {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
